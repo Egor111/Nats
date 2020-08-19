@@ -1,13 +1,16 @@
 ﻿namespace Producer
 {
     using System;
+    using System.Linq;
     using System.Text;
     using System.Text.Json;
     using System.Threading;
+    using BasicFunctionality.DataBase;
+    using BasicFunctionality.DataBase.Context;
+    using BasicFunctionality.Dto;
     using NATS.Client;
-    using STAN.Client;
 
-    class Program
+    public class Program
     {
         private static IConnection _connection;
         private static long _countSendMessage = 25;
@@ -15,19 +18,26 @@
 
         static void Main(string[] args)
         {
-            Console.Clear();
-
-            Console.WriteLine("Выберите действие");
-            Console.WriteLine("r) Запустить");
-            Console.WriteLine("q) Прекратить");
-
             using (_connection = ConnectToNats())
             {
-                while (_countSendMessage > 0)
+                using (var _context = new ApplicationDbContext())
                 {
-                    Publish();
+                    while (_countSendMessage > 0)
+                    {
+                        var data = GetData(_context);
 
-                    _countSendMessage--;
+                        var entity = ProcessData(data);
+
+                        var message = CreateMessage(entity);
+
+                        Publish(message);
+
+                        Save(_context, entity);
+
+                        Thread.Sleep(_sendIntervalMlSecond);
+
+                        _countSendMessage--;
+                    }
                 }
 
                 Clear();
@@ -52,19 +62,65 @@
         /// <summary>
         /// Публикация сообщения.
         /// </summary>
-        private static void Publish()
+        private static void Publish(byte[] message)  
+        {        
+            _connection.Publish("nats.test.pubsub", message);
+        }
+
+        /// <summary>
+        /// Получение данных из таблицы.
+        /// </summary>
+        private static NatsModel GetData(ApplicationDbContext _context)
         {
-            var entity = new Table
+            var data = _context.Set<SendNats>()
+                .Select(x => new NatsModel
+                {
+                    Id = x.Id,
+                    HashCode = x.HashCode,
+                    Number = x.Number
+                })
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefault();
+
+            return data;
+        }
+
+        /// <summary>
+        /// Обработка данных.
+        /// </summary>
+        private static SendNats ProcessData(NatsModel model)
+        {
+            if (model == null)
             {
+                var entity = new SendNats
+                {
+                    Number = 0,
+                    HashCode = model.GetHashCode(),
+                    SendTime = DateTime.Now,
+                    Text = $"Что то во время {DateTime.Now}"
+                };
+
+                return entity;
+            }
+
+            var sendNats = new SendNats
+            {
+                Number = model.Number ++,
+                HashCode = model.HashCode ++,
                 SendTime = DateTime.Now,
                 Text = $"Что то во время {DateTime.Now}"
             };
 
-            var message = CreateMessage(entity);
+            return sendNats;
+        }
 
-            _connection.Publish("nats.test.pubsub", message);
-
-            Thread.Sleep(_sendIntervalMlSecond);
+        /// <summary>
+        /// Сохранение данных в таблицу.
+        /// </summary>
+        private static void Save(ApplicationDbContext _context, SendNats entity)
+        {
+            _context.Set<SendNats>().Add(entity);
+            _context.SaveChanges();
         }
 
         /// <summary>

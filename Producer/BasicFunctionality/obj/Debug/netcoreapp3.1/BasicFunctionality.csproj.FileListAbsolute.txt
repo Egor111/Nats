@@ -1,0 +1,12 @@
+C:\Git\Nats\Producer\BasicFunctionality\bin\Debug\netcoreapp3.1\BasicFunctionality.deps.json
+C:\Git\Nats\Producer\BasicFunctionality\bin\Debug\netcoreapp3.1\BasicFunctionality.dll
+C:\Git\Nats\Producer\BasicFunctionality\obj\Debug\netcoreapp3.1\BasicFunctionality.csprojAssemblyReference.cache
+C:\Git\Nats\Producer\BasicFunctionality\obj\Debug\netcoreapp3.1\BasicFunctionality.AssemblyInfoInputs.cache
+C:\Git\Nats\Producer\BasicFunctionality\obj\Debug\netcoreapp3.1\BasicFunctionality.AssemblyInfo.cs
+C:\Git\Nats\Producer\BasicFunctionality\obj\Debug\netcoreapp3.1\BasicFunctionality.csproj.CoreCompileInputs.cache
+C:\Git\Nats\Producer\BasicFunctionality\bin\Debug\netcoreapp3.1\BasicFunctionality.runtimeconfig.json
+C:\Git\Nats\Producer\BasicFunctionality\bin\Debug\netcoreapp3.1\BasicFunctionality.runtimeconfig.dev.json
+C:\Git\Nats\Producer\BasicFunctionality\bin\Debug\netcoreapp3.1\BasicFunctionality.pdb
+C:\Git\Nats\Producer\BasicFunctionality\obj\Debug\netcoreapp3.1\BasicFunctionality.dll
+C:\Git\Nats\Producer\BasicFunctionality\obj\Debug\netcoreapp3.1\BasicFunctionality.pdb
+C:\Git\Nats\Producer\BasicFunctionality\obj\Debug\netcoreapp3.1\BasicFunctionality.genruntimeconfig.cache
